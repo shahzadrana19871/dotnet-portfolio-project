@@ -1,0 +1,21 @@
+services:
+  api:
+    build: ./src/DigitalWallet.Api
+    ports: ["8080:8080"]
+    environment:
+      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Postgres: Host=postgres;Database=wallet;Username=wallet;Password=wallet
+      ConnectionStrings__Redis: redis:6379
+      RabbitMq__Host: rabbitmq
+    depends_on: [postgres, redis, rabbitmq]
+  postgres:
+    image: postgres:16
+    environment: { POSTGRES_USER: wallet, POSTGRES_PASSWORD: wallet, POSTGRES_DB: wallet }
+    ports: ["5432:5432"]
+  redis:
+    image: redis:7
+    ports: ["6379:6379"]
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports: ["5672:5672", "15672:15672"]

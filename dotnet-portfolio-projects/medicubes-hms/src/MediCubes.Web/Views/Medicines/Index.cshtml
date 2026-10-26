@@ -1,0 +1,52 @@
+@model IEnumerable<Medicine>
+@{
+    ViewData["Title"] = "Pharmacy inventory";
+    var lowStockOnly = (bool)ViewBag.LowStock;
+    var today = DateTime.Today;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Pharmacy inventory</h1>
+    <a asp-action="Create" class="btn btn-primary">Add medicine</a>
+</div>
+
+<form method="get" class="row g-2 align-items-center mb-3">
+    <div class="col-auto">
+        <input name="q" value="@ViewBag.Query" class="form-control" placeholder="Search name or SKU" />
+    </div>
+    <div class="col-auto form-check ms-2">
+        <input type="checkbox" id="lowStock" name="lowStock" value="true" class="form-check-input" checked="@lowStockOnly" />
+        <label for="lowStock" class="form-check-label">Low stock only</label>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-secondary">Filter</button>
+    </div>
+</form>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Name</th><th>SKU</th><th class="text-end">Qty</th><th class="text-end">Reorder at</th>
+            <th class="text-end">Price</th><th>Expiry</th><th>Status</th><th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var m in Model)
+    {
+        <tr>
+            <td>@m.Name</td>
+            <td>@m.Sku</td>
+            <td class="text-end">@m.Quantity</td>
+            <td class="text-end">@m.ReorderLevel</td>
+            <td class="text-end">@m.UnitPrice.ToString("C")</td>
+            <td>@m.ExpiryDate.ToString("yyyy-MM-dd")</td>
+            <td>
+                @if (m.IsExpired(today)) { <span class="badge text-bg-danger">Expired</span> }
+                else if (m.IsLowStock) { <span class="badge text-bg-warning">Low stock</span> }
+                else { <span class="badge text-bg-success">OK</span> }
+            </td>
+            <td><a asp-action="Edit" asp-route-id="@m.Id">Edit</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

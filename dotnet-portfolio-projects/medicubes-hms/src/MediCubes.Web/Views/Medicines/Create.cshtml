@@ -1,0 +1,11 @@
+@model Medicine
+@{ ViewData["Title"] = "Add medicine"; }
+
+<h1 class="h3 mb-3">Add medicine</h1>
+<form asp-action="Create" method="post">
+    <partial name="_MedicineForm" model="Model" />
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a asp-action="Index" class="btn btn-link">Cancel</a>
+    </div>
+</form>
